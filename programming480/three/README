@@ -1,0 +1,44 @@
+//Caroline Munson
+//REDID: 822774843
+//Edoras account: cssc0936@edoras.sdsu.edu
+
+Please answer the following questions to explain your implementation (Directly write your answer below the questions).
+
+
+
+1. Which are the critical regions need to be protected for mutula exclusion? Why are they? 
+The critical regions that need to be protected are the ancillary variables(next_in and next_out) that define the bounds of the buffer.
+
+They are protected to avoid collisions that could corrupt the data structure. If multiple producer producing at the same time the next_in value could not be incremented properly and could therefore become inaccurate. If two consumers consume at the same time, then the next_out value could not be incremented properly and could therefore become inaccurate.
+
+
+
+
+2. There are 7 requirements your program should achieve: 
+
+1)	When a producer thread inserts a new item into the buffer, a message should be print to screen showing which thread (with ID) insert which item (with value) to which buffer slot (with next_in)
+2)	When a consumer thread removes a new item from the buffer, a message should be print to screen showing which thread (with ID) remove which item (with value) from which buffer slot (with next_out)
+3)	Producers must block if the buffer is full,
+4)	Consumers must block if the buffer is empty,
+5)	No two/more producers insert items to the same buffer slot,
+6)	No two/more consumers remove the items from the same buffer slot,
+7)	The messages must be printed in the order showing the real execution scenarios.
+
+Please explain how they are satisfied in your design (you need to explain one by one!)
+
+1) A producer will wait for the mutex to unlock, then do the insert and print out the information, including the thread ID and which buffer slot. 
+2) Similarly, a consumer will also wait for the mutex to unlock, then do the remove operation and print out the information.
+3) Producers block if the buffer is full through the use of a semaphore. The value of the semaphore is initialized to the size of the buffer, then each insertion operation calls a sem_wait operation which ensures that no more items than the size of the buffer can be inserted. To update this value when the item is removed, we call sem_post on the semaphore.
+4) Consumers block if the buffer is empty also through the use of a semaphore. This semaphore's value is reflective of the number of items in the buffer. This semaphore is initialized to 0 because the buffer starts out as empty. Everytime we insert an item into the buffer we call sem_post on this semaphore in order to increment the count for number of items in the buffer. Whenever an item is removed from the buffer, we call sem_wait which ensures that there is at least one item in the buffer before proceeding, and decrements the value of the semaphore reflecting the buffer size shrinking
+5)The mutex protects the entirety of the insert operation, which ensures that no thread can begin an insert while one is already ongoing. This means that whenever an insert has begun, it can be assumed that all the buffer's values are current and won't be subject to collisions for the duration of that insert operation, meaning the next_in value will always be successfully incremented. As a result of this, every insert operation is performed on a new slot.
+6) The mutex also protects the entirety of the remove operation, ensuring that no thread can begin a remove operation while one is already ongoing. This again means that the buffers values are current and safe from a collision for the duration of the remove operation, meaning the next_out value will always be successfully incremented. This again ensures that every remove operation is performed on a new slot.
+7) Each print statement is in the thread conducting the relevant operation, which means that messages are printed as they occur. This ensures that the messages are printed showing the real execution scenarios in order.
+
+
+
+
+3) Why you think your design is the most effective one? Is there any other design also works but less effective? 
+I would argue my design is the best implementation. I initially considerred not using semaphores, and instead creating a count integer value. In this case, we would check the count is less than the capacity and greater than zero before removing. This is a less ideal model because theres no way to block until the condition becomes valid- Instead you have to use a while loop to continue rechecking the condition until it becomes valid which is expensive. With semaphores, you can cheaply block until conditions are valid, removing the need for while loops.
+
+
+

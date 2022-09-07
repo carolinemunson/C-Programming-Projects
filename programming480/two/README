@@ -1,0 +1,36 @@
+Caroline Munson
+RED ID: 822774843
+cssc0936@edoras.sdsu.edu
+
+Please answer the following questions to explain your implementation (Directly write your answer below the questions).
+
+
+1) In your implementation, please describe your strategy/design to count the special words using multiple threads.
+In my implementation, I used multiple threads to process groups of files at the same time with specific threads responsible for specific ranges of files. In order to accomplish this, I create an array struct that effectively works as a container for each thread to hold the first and last index files. To do this, I had to create a struct called container in my count.h file that  contained those first and last indices. My code then processes each range of files using fscanf, removes punctuation, and counts special words reusing my code from program 0 for the helper functions. Using the int increment was how I spaced out the ranges, and with this variable, the code is able to be flexible and dynamic in terms of the number argument. I additionally used mutex lock and unlock calls in my count function to avoid parallel threads from accessing the same memory thus causing an error in the critical section.
+
+
+2) In your implementation, please describe how you keep the specialfreq[ ] always having the up-to-date count.
+In order to kept specialfreq[] with the up to date count I used a long pointer within each struct. Before I created my thread, I needed to point the long pointer to the specialfreq so that the thread can have access to specialfreq[].In addition, I also implemented mutexes to achieve accurate results for each run. This makes it so one thread can increment specialfreq[] at a time.
+
+
+3) Please measure the total time cost of special word count uisng your program. Please repeat at least three times and write down your time below.
+
+Trial 1:
+real    0m0.381s
+user    0m1.015s
+sys     0m0.070s
+
+Trial 2:
+real    0m0.390s
+user    0m1.010s
+sys     0m0.083s
+
+Trial 3:
+real    0m0.396s
+user    0m1.032s
+sys     0m0.071s
+
+
+4) Can you think of any other improvement in your implementation to speedup the special word count? If no, please briefly justify why you think your design is the best.
+The way I initially coded removePunc in program 0 slowed my code down significantly so I had to change approaches. Instead of using ispunct and locating the characters that are not punctuation, I use isalpha and located the punctuation, then remove it accordingly. Also, I had to remove a few character pointers that were also slowing down my runtime.
+ 

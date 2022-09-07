@@ -1,0 +1,11 @@
+Name: Caroline Munson
+REDID: 822774843
+Edoras account: cssc0936@edoras.sdsu.edu
+
+Files in directory:
+alphabetcount: This file counts the frequency of each upper and lower case alphabet letter in given files. I structured it in a hierarchy of sort- I start with a function that finds all files in a directory using the dirent library's readdir function, ensuring that they have a .txt file extension, then calls a function to open and read the files character by character. After that, I call the count function which identifies each character based on its ascii code, and increments the count of each letter as its found.
+
+specialcount:This file counts the frequency of five special words: he, she, him, they, and me. To accomplish this, I used some of the same structure and code to find the files in a directory, then open and read each file, except this time word by word. By reading in word by word, I was able to account for edge cases by making each word entirely lowercase, then removing all punctuation from the word, then directly compare it to each special word to find matches.
+
+count, makefile, testalphabetcount, and testspecialcount were not edited 
+

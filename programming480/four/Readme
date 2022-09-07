@@ -1,0 +1,12 @@
+Caroline Munson
+REDID: 822774843
+Edoras: cssc0936@edoras.sdsu.edu
+
+
+Please elaborate how you implement your FIFO and LRU replacement algorithm.
+You need to explain your design, not just paste source code here ... 
+
+I implemented the FIFO algorithm to act as a circular queue. It works to loop through the page accesses looking for page faults. We check for a page fault by looping through the array searching for the value of the page access. Every time a page fault occurs, the new page is overwritten in at the index of nextToBeReplaced, and then nextToBeReplaced is incremented, or set back to zero if it reaches the array size. The incrementation and reset to zero is accomplished by using the modulo operator on nextToBeReplaced and FrameNR. If a page fault does not occur, meaning the page access was found in the array, nothing happens. The number of page faults is returned at the end of the program.
+
+
+The LRU algorithm works by using a helper array containing the accessed time for each page frame. In its implementation, we again loop through the page accesses checking for page faults, then begin to populate the array by finding and replacing the element with the last accessed time that we stored in the helper array, with the current iteration value of the loop (j)to store the new access time. In order to locate the last used element, we loop through the helper array looking for the lowest value(representing the earliest time). This is not necessarily memory efficient due to extra required storage for the helper array, but is fairly time efficient- it doesn't need to search the entire page access history or expensively rearrange the main array like other methods would.
